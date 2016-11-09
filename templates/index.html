@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Songs in español</title>
+</head>
+<body>
+	<table>
+		<tr>
+			<th>Song</th>
+			<th>Artist</th>
+		</tr>
+			{% for song in songs %}
+			<tr>
+			<td>
+					<a href="{{ url_for('show_single_song', song_id=song.id) }}">
+							{{ song.title }} </a>
+			</td>
+			<td>
+					<a href="{{ url_for('show_single_song', song_id=song.id) }}">
+							{{ song.artist }} </a>
+			</td>
+			</tr>
+			{% endfor %}
+	</table>
+</body>
+</html>
+

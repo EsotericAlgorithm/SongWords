@@ -1,0 +1,102 @@
+<!doctype html>
+<head>
+<title>{{ title }}</title>
+
+<style>
+input {
+		margin: 1px;
+}
+input:invalid {
+		border: 1px solid red;
+		background: #ff6666;
+}
+
+input:valid {
+		border: 1px solid green;
+		background: #66ff66;
+}
+
+div#lyric {
+		line-height: 22px;
+}
+
+</style>
+
+</head>
+
+<body>
+<h1>{{ artist }} -- {{ title }}</h1>
+{{ youtube | youtube_embed | safe }}
+<div id='lyrics' style="text: white;">   
+{{lyrics |newline_format |safe }}
+</div>
+<p>
+<a href="{{ metro }}">Lyrics courtesy of MetroLyrics</a>
+</p>
+</body>
+<script type='text/javascript'>
+
+function replaceAll(str, find, replace) {
+		  return str.replace(new RegExp(find, 'gi'), replace);
+}
+
+function replaceAllWord(str, find, replace) {
+		  // Convert find to only include full words
+		  find = '(?:^|\\s)(' + find + ')(?=\\s|$)';
+		  console.log(find);
+		  return str.replace(new RegExp(find, 'gi'), replace);
+}
+
+var lyricsWithFormatting = document.getElementById('lyrics').innerText.toLowerCase();
+// Filter out all nonwords, remove empty strings
+lyrics = replaceAll(lyricsWithFormatting, /\s/, " ");
+//lyrics = replaceAll(lyricsWithFormatting, ",","");
+//lyrics = replaceAll(lyricsWithFormatting, ".","");
+lyrics = lyrics.split(" ").filter(Boolean);
+
+var stopwords = ["un", "una", "unas", "unos", "uno", "sobre", "todo", "también", "tras", "otro", "algún", "alguno", "alguna", "algunos", "algunas", "ser", "es", "soy", "eres", "somos", "sois", "estoy", "esta", "estamos", "estais", "estan", "como", "en", "para", "atras", "porque", "por qué", "estado", "estaba", "ante", "antes", "siendo", "ambos", "pero", "por", "poder", "puede", "puedo", "podemos", "podeis", "pueden", "fui", "fue", "fuimos", "fueron", "hacer", "hago", "hace", "hacemos", "haceis", "hacen", "cada", "fin", "incluso", "primerodesde", "conseguir", "consigo", "consigue", "consigues", "conseguimos", "consiguen", "ir", "voy", "va", "vamos", "vais", "van", "vaya", "gueno", "ha", "tener", "tengo", "tiene", "tenemos", "teneis", "tienen", "el", "la", "lo", "las", "los", "su", "aqui", "mio", "tuyo", "ellos", "ellas", "nos", "nosotros", "vosotros", "vosotras", "si", "dentro", "solo", "solamente", "saber", "sabes", "sabe", "sabemos", "sabeis", "saben", "ultimo", "largo", "bastante", "haces", "muchos", "aquellos", "aquellas", "sus", "entonces", "tiempo", "verdad", "verdadero", "verdaderacierto", "ciertos", "cierta", "ciertas", "intentar", "intento", "intenta", "intentas", "intentamos", "intentais", "intentan", "dos", "bajo", "arriba", "encima", "usar", "uso", "usas", "usa", "usamos", "usais", "usan", "emplear", "empleo", "empleas", "emplean", "ampleamos", "empleais", "valor", "muy", "era", "eras", "eramos", "eran", "modo", "bien", "cual", "cuando", "donde", "mientras", "quien", "con", "entre", "sin", "trabajo", "trabajar", "trabajas", "trabaja", "trabajamos", "trabajais", "trabajan", "podria", "podrias", "podriamos", "podrian", "podriais", "yo", "aquel", "ni", 'y', 'de'];
+
+function notStopFilter(word) {
+		return !stopwords.includes(word);
+}
+function shuffle(a) {
+	var j, x, i;
+	for (i = a.length; i; i--) {
+		j = Math.floor(Math.random() * i);
+		x = a[i - 1];
+		a[i - 1] = a[j];
+		a[j] = x;
+	}
+}
+
+// Remove stop words
+lyrics = lyrics.filter(notStopFilter);
+
+function selectRandomWords(wordList, numberWords) {
+		var words = wordList.slice();
+		shuffle(words);
+		var randomWords = []
+		for (var i = 0; i < numberWords; i++) {
+				randomWords.push(words.pop());
+   		}
+		return randomWords;
+}
+ 
+
+
+function replaceLyric(word) {
+		var textElement = document.getElementById('lyrics');
+		var baseText = textElement.innerHTML //case
+		var replacementText = "<input type='text' pattern=" + word + " size=" + word.length + " required>";
+		var newText = replaceAllWord(baseText, word, replacementText);
+		textElement.innerHTML = newText;
+}
+
+selectRandomWords(lyrics, 5).forEach(replaceLyric);
+
+// Lyrics visible
+document.getElementById('lyrics').setAttribute('style', 'text: black');
+
+</script>
+</html>
+
